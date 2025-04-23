@@ -46,7 +46,9 @@ const HotelList = ({ hotels, refreshHotels }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://test-hotel-back-production.up.railway.app/api/hoteles/${hotelToDelete}`);
+      await axios.delete(
+        `https://test-hotel-back-production.up.railway.app/api/hoteles/${hotelToDelete}`
+      );
       toast.success("Hotel eliminado exitosamente!");
       refreshHotels();
       setOpen(false);
@@ -147,19 +149,30 @@ const HotelList = ({ hotels, refreshHotels }) => {
       return;
     }
 
+    const updatedTipoHabitacions = hotelDetails.tipo_habitacions || [];
+    const updatedAcomodacions =
+      updatedTipoHabitacions.find((tipo) => tipo.tipo === newRoom.tipo)
+        ?.acomodacions || [];
+
     setHotelDetails((prevDetails) => ({
       ...prevDetails,
       tipo_habitacions: [
-        ...prevDetails.tipo_habitacions,
+        ...updatedTipoHabitacions.filter((tipo) => tipo.tipo !== newRoom.tipo),
         {
-          cantidad: parseInt(newRoom.cantidad),
           tipo: newRoom.tipo,
-          acomodacion: newRoom.acomodacion,
+          acomodacions: [
+            ...updatedAcomodacions,
+            {
+              cantidad: parseInt(newRoom.cantidad),
+              acomodacion: newRoom.acomodacion,
+            },
+          ],
         },
       ],
     }));
 
     setAddedRooms([...addedRooms, newRoom]);
+
     setNewRoom({ cantidad: "", tipo: "", acomodacion: "" });
     setError(null);
   };
@@ -331,7 +344,7 @@ const HotelList = ({ hotels, refreshHotels }) => {
                     {hotelDetails?.tipo_habitacions &&
                     hotelDetails.tipo_habitacions.length > 0 ? (
                       hotelDetails.tipo_habitacions.map((tipoHabitacion) =>
-                        tipoHabitacion.acomodacions.map(
+                        tipoHabitacion.acomodacions?.map(
                           (acomodacion, index) => (
                             <TableRow key={index}>
                               <TableCell>{acomodacion.cantidad}</TableCell>
