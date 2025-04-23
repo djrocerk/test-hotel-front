@@ -1,0 +1,25 @@
+.custom-toast {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .custom-toast::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background-color: #4caf50; 
+    animation: toast-progress 4s linear forwards;
+  }
+  
+  @keyframes toast-progress {
+    from {
+      transform: translateX(    0%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
